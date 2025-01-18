@@ -528,9 +528,6 @@ public class FunctionalStorage extends ModuleController {
                 protected void registerModels() {
                     for (DrawerType value : DrawerType.values()) {
                         for (var blockRegistryObject : DRAWER_TYPES.get(value).stream().map(BlockWithTile::block).toList()) {
-                            if (blockRegistryObject.get() instanceof FramedDrawerBlock) {
-                                continue;
-                            }
                             withExistingParent(BuiltInRegistries.BLOCK.getKey(blockRegistryObject.get()).getPath() + "_locked", modLoc(BuiltInRegistries.BLOCK.getKey(blockRegistryObject.get()).getPath()))
                                     .texture("lock_icon", modLoc("block/lock"));
                         }
