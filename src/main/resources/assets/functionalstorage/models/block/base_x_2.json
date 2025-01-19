@@ -15,6 +15,7 @@
 			}
 		},
 		{
+			"name": "frontDisplay1",
 			"from": [1, 9, 0.5],
 			"to": [15, 15, 2.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
@@ -24,6 +25,7 @@
 			}
 		},
 		{
+			"name": "divHorizontal",
 			"from": [1, 7, 0],
 			"to": [15, 9, 2],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
@@ -34,6 +36,7 @@
 			}
 		},
 		{
+			"name": "frontDisplay2",
 			"from": [1, 1, 0.5],
 			"to": [15, 7, 2.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
@@ -89,27 +92,10 @@
 			}
 		},
 		{
-			"from": [
-				7.5,
-				15,
-				-0.01
-			],
-			"to": [
-				8.5,
-				16,
-				16
-			],
+			"from": [7.5, 15, -0.01],
+			"to": [8.5, 16, 16],
 			"faces": {
-				"north": {
-					"texture": "#lock_icon",
-					"uv": [
-						0.0,
-						0.0,
-						16.0,
-						16.0
-					],
-					"cullface": "north"
-				}
+				"north": {"uv": [0, 0, 16, 16], "texture": "#lock_icon", "cullface": "north"}
 			}
 		}
 	],
