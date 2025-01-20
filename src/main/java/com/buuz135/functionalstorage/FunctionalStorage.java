@@ -43,6 +43,7 @@ import com.hrznstudio.titanium.nbthandler.NBTManager;
 import com.hrznstudio.titanium.network.NetworkHandler;
 import com.hrznstudio.titanium.recipe.serializer.GenericSerializer;
 import com.hrznstudio.titanium.tab.TitaniumTab;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -50,7 +51,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -94,10 +94,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +116,7 @@ public class FunctionalStorage extends ModuleController {
     }
 
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
 
     public static ConcurrentLinkedQueue<IWoodType> WOOD_TYPES = new ConcurrentLinkedQueue<>();
 
@@ -167,6 +164,7 @@ public class FunctionalStorage extends ModuleController {
 
     public FunctionalStorage(Dist dist, IEventBus modBus, ModContainer container) {
         super(container);
+        LOGGER.debug("FunctionalStorage mod instantiated");
         NeoForgeMod.enableMilkFluid();
         FSAttachments.DR.register(modBus);
         if (dist.isClient()) {
@@ -394,23 +392,23 @@ public class FunctionalStorage extends ModuleController {
                 LinkingToolItem.LinkingMode linkingMode = LinkingToolItem.getLinkingMode(stack);
                 LinkingToolItem.ActionMode linkingAction = LinkingToolItem.getActionMode(stack);
                 if (tint != 0 && stack.has(FSAttachments.ENDER_FREQUENCY)) {
-                    return FastColor.ARGB32.opaque(new Color(44, 150, 88).getRGB());
+                    return FastColor.ARGB32.color(44, 150, 88);
                 }
                 if (tint == 3 && stack.has(FSAttachments.CONTROLLER)) {
-                    return FastColor.ARGB32.opaque(Color.RED.getRGB());
+                    return FastColor.ARGB32.opaque(FastColor.ARGB32.color(255, 0, 0));
                 }
                 if (tint == 1) {
-                    return FastColor.ARGB32.opaque(linkingMode.getColor().getValue());
+                    return FastColor.ARGB32.opaque(linkingMode.getColor());
                 }
                 if (tint == 2) {
-                    return FastColor.ARGB32.opaque(linkingAction.getColor().getValue());
+                    return FastColor.ARGB32.opaque(linkingAction.getColor());
                 }
                 return -1;
             }, LINKING_TOOL.get());
             item.getItemColors().register((stack, tint) -> {
                 ConfigurationToolItem.ConfigurationAction action = ConfigurationToolItem.getAction(stack);
                 if (tint == 1) {
-                    return FastColor.ARGB32.opaque(action.getColor().getValue());
+                    return FastColor.ARGB32.opaque(action.getColor());
                 }
                 return -1;
             }, CONFIGURATION_TOOL.get());

@@ -14,8 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
@@ -27,12 +27,12 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -223,18 +223,19 @@ public class LinkingToolItem extends BasicItem {
     }
 
     public enum LinkingMode implements StringRepresentable {
-        SINGLE(TextColor.fromRgb(Color.cyan.getRGB())),
-        MULTIPLE(TextColor.fromRgb(Color.GREEN.getRGB()));
+        // SINGLE(TextColor.fromRgb(Color.cyan.getRGB())),
+        SINGLE(MapColor.COLOR_CYAN.col),
+        MULTIPLE(MapColor.COLOR_GREEN.col);
 
         public static final Codec<LinkingMode> CODEC = StringRepresentable.fromValues(LinkingMode::values);
 
-        private final TextColor color;
+        private final int color;
 
-        LinkingMode(TextColor color) {
+        LinkingMode(int color) {
             this.color = color;
         }
 
-        public TextColor getColor() {
+        public int getColor() {
             return color;
         }
 
@@ -245,18 +246,18 @@ public class LinkingToolItem extends BasicItem {
     }
 
     public enum ActionMode implements StringRepresentable {
-        ADD(TextColor.fromRgb(new Color(40, 131, 250).getRGB())),
-        REMOVE(TextColor.fromRgb(new Color(250, 145, 40).getRGB()));
+        ADD(FastColor.ARGB32.color(40, 131, 250)),
+        REMOVE(FastColor.ARGB32.color(250, 145, 40));
 
         public static final Codec<ActionMode> CODEC = StringRepresentable.fromValues(ActionMode::values);
 
-        private final TextColor color;
+        private final int color;
 
-        ActionMode(TextColor color) {
+        ActionMode(int color) {
             this.color = color;
         }
 
-        public TextColor getColor() {
+        public int getColor() {
             return color;
         }
 

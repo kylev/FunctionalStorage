@@ -94,23 +94,23 @@ public class ConfigurationToolItem extends BasicItem {
     }
 
     public enum ConfigurationAction implements StringRepresentable{
-        LOCKING(TextColor.fromRgb(FastColor.ARGB32.color(40, 131, 250)), 1),
-        TOGGLE_NUMBERS(TextColor.fromRgb(FastColor.ARGB32.color(250, 145, 40)), 1),
-        TOGGLE_RENDER(TextColor.fromRgb(FastColor.ARGB32.color(100, 250, 40)), 1),
-        TOGGLE_UPGRADES(TextColor.fromRgb(FastColor.ARGB32.color(166, 40, 250)), 1),
-        INDICATOR(TextColor.fromRgb(FastColor.ARGB32.color(255, 40, 40)), 3); //0 NO , 1 - PROGRESS, 2 - ONLY FULL, 3 - ONLY FULL WITHOUT BG
+        LOCKING(FastColor.ARGB32.color(40, 131, 250), 1),
+        TOGGLE_NUMBERS(FastColor.ARGB32.color(250, 145, 40), 1),
+        TOGGLE_RENDER(FastColor.ARGB32.color(100, 250, 40), 1),
+        TOGGLE_UPGRADES(FastColor.ARGB32.color(166, 40, 250), 1),
+        INDICATOR(FastColor.ARGB32.color(255, 40, 40), 3); //0 NO , 1 - PROGRESS, 2 - ONLY FULL, 3 - ONLY FULL WITHOUT BG
 
 
         public static final Codec<ConfigurationAction> CODEC = StringRepresentable.fromValues(ConfigurationAction::values);
-        private final TextColor color;
+        private final int color;
         private final int max;
 
-        ConfigurationAction(TextColor color, int max) {
+        ConfigurationAction(int color, int max) {
             this.color = color;
             this.max = max;
         }
 
-        public TextColor getColor() {
+        public int getColor() {
             return color;
         }
 
