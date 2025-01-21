@@ -35,7 +35,6 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
             IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(stack.getFluid());
             ResourceLocation texture = renderProperties.getStillTexture(stack);
             TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
-            VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
 
             float[] color = decomposeColorF(renderProperties.getTintColor(stack));
             float red = color[1];
@@ -56,7 +55,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
             float bz1 = (float) bounds.minZ * 1.0f;
             float bz2 = (float) bounds.maxZ * 1.0f;
 
-
+            VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
             Matrix4f posMat = matrixStack.last().pose();
 
             //TOP
