@@ -2,8 +2,6 @@
   "credit": "Made with Blockbench",
   "loader": "functionalstorage:framedblock",
   "children": {
-    "lock": {
-    },
     "front": {
       "parent": "functionalstorage:block/framed_controller_front",
       "textures": {

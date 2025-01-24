@@ -5,8 +5,7 @@
 		"front": "functionalstorage:block/compacting_drawer_front",
 		"particle": "functionalstorage:block/compacting_drawer_side",
 		"side": "functionalstorage:block/compacting_drawer_side",
-		"top": "functionalstorage:block/compacting_drawer_top",
-		"lock_icon": "functionalstorage:block/unlock"
+		"top": "functionalstorage:block/compacting_drawer_top"
 	},
 	"elements": [
 		{
@@ -123,19 +122,7 @@
 				8.5,
 				16,
 				16
-			],
-			"faces": {
-				"north": {
-					"texture": "#lock_icon",
-					"uv": [
-						0.0,
-						0.0,
-						16.0,
-						16.0
-					],
-					"cullface": "north"
-				}
-			}
+			]
 		}
 	],
 	"display": {

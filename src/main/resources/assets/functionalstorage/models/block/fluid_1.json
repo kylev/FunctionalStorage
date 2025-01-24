@@ -1,7 +1,6 @@
 {
 	"loader": "neoforge:composite",
 	"textures": {
-		"lock_icon": "functionalstorage:block/unlock",
 		"particle": "functionalstorage:block/fluid_front_1"
 	},
 	"children": {
