@@ -1,5 +1,9 @@
 {
   "credit": "Made with Blockbench",
+  "textures": {
+		"particle": "functionalstorage:block/lock_icon",
+		"lock_icon": "functionalstorage:block/lock_icon"
+	},
   "elements": [
     {
       "from": [7.5, 15, -0.01],
