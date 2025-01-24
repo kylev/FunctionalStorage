@@ -12,7 +12,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -29,38 +28,21 @@ public class FunctionalStorageBlockstateProvider extends BlockStateProvider {
         this.blocks = blocks;
     }
 
-    public static ResourceLocation getModel(Block block, boolean locked) {
+    public static ResourceLocation getModel(Block block) {
         return com.buuz135.functionalstorage.util.Utils.resourceLocation(BuiltInRegistries.BLOCK.getKey(block).getNamespace(),
-                "block/" + BuiltInRegistries.BLOCK.getKey(block).getPath() + (locked ? "_locked" : ""));
+                "block/" + BuiltInRegistries.BLOCK.getKey(block).getPath());
     }
 
     @Override
     protected void registerStatesAndModels() {
         blocks.get().stream()
             .filter(b -> b instanceof RotatableBlock)
-            .forEach(b -> regMultiPart((RotatableBlock<?>) b));
+            .forEach(b -> registerRotatable((RotatableBlock) b));
     }
 
-    private void registerForAllLoop(RotatableBlock<?> block) {
-        getVariantBuilder(block).forAllStates(state -> {
-            boolean locked = false;
-            Direction facing = state.getValue(RotatableBlock.FACING_HORIZONTAL);
-            if (block instanceof DrawerBlock) {
-                LOGGER.info("DrawerBlock {}", state);
-                locked = state.getValue(DrawerBlock.LOCKED);
-            }
-
-            var modelFile = new ModelFile.UncheckedModelFile(getModel(block, locked));
-            return ConfiguredModel.builder()
-                    .modelFile(modelFile)
-                    .rotationY((int) facing.getOpposite().toYRot())
-                    .uvLock(true)
-                    .build();
-        });
-    }
-
-    private void regMultiPart(RotatableBlock<?> block) {
-        var baseModel = new ModelFile.UncheckedModelFile(getModel(block, false));
+    private void registerRotatable(RotatableBlock block) {
+        LOGGER.debug("Registering multipart for {}", block);
+        var baseModel = new ModelFile.UncheckedModelFile(getModel(block));
         var lockModel = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(FunctionalStorage.MOD_ID, "block/lock"));
         var builder = getMultipartBuilder(block);
 
