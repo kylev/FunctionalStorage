@@ -1,6 +1,7 @@
 package com.buuz135.functionalstorage.data;
 
 import com.buuz135.functionalstorage.FunctionalStorage;
+import com.buuz135.functionalstorage.block.Drawer;
 import com.buuz135.functionalstorage.block.DrawerBlock;
 import com.hrznstudio.titanium.block.RotatableBlock;
 
@@ -36,8 +37,8 @@ public class FunctionalStorageBlockstateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         blocks.get().stream()
-            .filter(b -> b instanceof RotatableBlock)
-            .forEach(b -> registerForAllLoop((RotatableBlock) b));
+            .filter(b -> b instanceof Drawer)
+            .forEach(b -> regMultiPart((Drawer) b));
     }
 
     private void registerForAllLoop(RotatableBlock<?> block) {
@@ -56,5 +57,16 @@ public class FunctionalStorageBlockstateProvider extends BlockStateProvider {
                     .uvLock(true)
                     .build();
         });
+    }
+
+    private void regMultiPart(Drawer<?> block) {
+        var baseModel = new ModelFile.UncheckedModelFile(getModel(block, false));
+        var lockModel = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(FunctionalStorage.MOD_ID, "block/lock"));
+        var builder = getMultipartBuilder(block);
+
+        for (Direction direction : Drawer.FACING_HORIZONTAL.getPossibleValues()) {
+            builder.part().modelFile(baseModel).rotationY((int) direction.getOpposite().toYRot()).addModel().condition(RotatableBlock.FACING_HORIZONTAL, direction).end();
+            builder.part().modelFile(lockModel).rotationY((int) direction.getOpposite().toYRot()).addModel().condition(RotatableBlock.FACING_HORIZONTAL, direction).condition(DrawerBlock.LOCKED, true).end();
+        }
     }
 }
