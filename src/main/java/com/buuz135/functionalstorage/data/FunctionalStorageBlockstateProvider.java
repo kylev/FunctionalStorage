@@ -37,8 +37,8 @@ public class FunctionalStorageBlockstateProvider extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         blocks.get().stream()
-            .filter(b -> b instanceof Drawer)
-            .forEach(b -> regMultiPart((Drawer) b));
+            .filter(b -> b instanceof RotatableBlock)
+            .forEach(b -> regMultiPart((RotatableBlock<?>) b));
     }
 
     private void registerForAllLoop(RotatableBlock<?> block) {
@@ -59,14 +59,19 @@ public class FunctionalStorageBlockstateProvider extends BlockStateProvider {
         });
     }
 
-    private void regMultiPart(Drawer<?> block) {
+    private void regMultiPart(RotatableBlock<?> block) {
         var baseModel = new ModelFile.UncheckedModelFile(getModel(block, false));
         var lockModel = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(FunctionalStorage.MOD_ID, "block/lock"));
         var builder = getMultipartBuilder(block);
 
-        for (Direction direction : Drawer.FACING_HORIZONTAL.getPossibleValues()) {
-            builder.part().modelFile(baseModel).rotationY((int) direction.getOpposite().toYRot()).addModel().condition(RotatableBlock.FACING_HORIZONTAL, direction).end();
-            builder.part().modelFile(lockModel).rotationY((int) direction.getOpposite().toYRot()).addModel().condition(RotatableBlock.FACING_HORIZONTAL, direction).condition(DrawerBlock.LOCKED, true).end();
+        for (Direction direction : RotatableBlock.FACING_HORIZONTAL.getPossibleValues()) {
+            builder.part().modelFile(baseModel).uvLock(true).rotationY((int) direction.getOpposite().toYRot()).addModel()
+                .condition(RotatableBlock.FACING_HORIZONTAL, direction).end();
+
+            if (block instanceof Drawer) {
+                builder.part().modelFile(lockModel).uvLock(true).rotationY((int) direction.getOpposite().toYRot()).addModel()
+                    .condition(RotatableBlock.FACING_HORIZONTAL, direction).condition(DrawerBlock.LOCKED, true).end();
+            }
         }
     }
 }
