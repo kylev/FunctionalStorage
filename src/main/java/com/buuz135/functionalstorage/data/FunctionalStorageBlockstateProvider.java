@@ -35,12 +35,13 @@ public class FunctionalStorageBlockstateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        LOGGER.debug("FUCK MEEEEEEEE");
         blocks.get().stream()
-            .filter(b -> b instanceof RotatableBlock)
-            .forEach(b -> registerRotatable((RotatableBlock) b));
+            .filter(b -> b instanceof RotatableBlock<?>)
+            .forEach(b -> registerRotatable((RotatableBlock<?>) b));
     }
 
-    private void registerRotatable(RotatableBlock block) {
+    private void registerRotatable(RotatableBlock<?> block) {
         LOGGER.debug("Registering multipart for {}", block);
         var baseModel = new ModelFile.UncheckedModelFile(getModel(block));
         var lockModel = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(FunctionalStorage.MOD_ID, "block/lock"));
