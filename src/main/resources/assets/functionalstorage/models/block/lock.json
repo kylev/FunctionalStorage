@@ -1,16 +1,16 @@
 {
-  "credit": "Made with Blockbench",
-  "textures": {
-		"particle": "functionalstorage:block/lock_icon",
-		"lock_icon": "functionalstorage:block/lock_icon"
+	"credit": "Made with Blockbench",
+	"textures": {
+		"particle": "functionalstorage:block/lock",
+		"lock_icon": "functionalstorage:block/lock"
 	},
-  "elements": [
-    {
-      "from": [7.5, 15, -0.01],
-      "to": [8.5, 16, 1],
-      "faces": {
-        "north": {"texture": "#lock_icon", "uv": [0.0, 0.0, 16.0, 16.0], "cullface": "north"}
-      }
-    }
-  ]
+	"elements": [
+		{
+			"from": [7.5, 15, -0.01],
+			"to": [8.5, 16, 1],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#lock_icon", "cullface": "north"}
+			}
+		}
+	]
 }
