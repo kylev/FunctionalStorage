@@ -12,7 +12,7 @@
 		"front": {
 			"parent": "functionalstorage:block/fluid_front_1",
 			"textures": {
-				"front": "functionalstorage:block/framed_front_1"
+				"front": "functionalstorage:block/fluid_front_1"
 			}
 		},
 		"tank": {

@@ -12,7 +12,7 @@
 		"front": {
 			"parent": "functionalstorage:block/fluid_front_2",
 			"textures": {
-				"front": "functionalstorage:block/framed_front_2"
+				"front": "functionalstorage:block/fluid_front_2"
 			}
 		},
 		"tank": {
@@ -30,7 +30,7 @@
 		"side"
 	],
 	"textures": {
-		"particle": "functionalstorage:block/framed_front_1"
+		"particle": "functionalstorage:block/framed_front_2"
 	},
 	"display": {
 		"thirdperson_righthand": {
