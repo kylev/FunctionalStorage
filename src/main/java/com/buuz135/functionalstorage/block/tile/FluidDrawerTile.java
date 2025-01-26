@@ -70,7 +70,7 @@ public class FluidDrawerTile extends ControllableDrawerTile<FluidDrawerTile> {
     @Override
     public void initClient() {
         super.initClient();
-        var slotName = "";
+        var slotName = "_1";
         if (type.getSlots() == 2) {
             slotName = "_2";
         }
