@@ -1,7 +1,6 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"particle": "functionalstorage:block/fluid_front_4",
 		"front": "functionalstorage:block/fluid_front_4"
 	},
 	"elements": [
