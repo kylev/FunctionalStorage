@@ -8,8 +8,8 @@
 			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
 			"faces": {
 				"north": {"uv": [1, 7, 15, 9], "texture": "#front_divider", "cullface": "north"},
-				"up": {"uv": [15, 6, 1, 7], "texture": "#front_divider", "cullface": "north"},
-				"down": {"uv": [1, 10, 15, 9], "texture": "#front_divider", "cullface": "north"}
+				"up": {"uv": [15, 7, 1, 8], "texture": "#front_divider", "cullface": "north"},
+				"down": {"uv": [1, 9, 15, 8], "texture": "#front_divider", "cullface": "north"}
 			}
 		}
 	]
