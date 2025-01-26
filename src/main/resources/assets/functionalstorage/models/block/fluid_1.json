@@ -14,10 +14,7 @@
 			}
 		},
 		"front": {
-			"parent": "functionalstorage:block/fluid_front_1",
-			"textures": {
-				"front": "functionalstorage:block/fluid_front_1"
-			}
+			"parent": "functionalstorage:block/fluid_front_1"
 		},
 		"tank": {
 			"parent": "functionalstorage:block/fluid_inner_1"
