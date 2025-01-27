@@ -1,5 +1,9 @@
 {
 	"credit": "Made with Blockbench",
+	"textures": {
+		"particle": "functionalstorage:block/framed_front_2",
+		"front_divider": "functionalstorage:block/framed_front_2"
+	},
 	"elements": [
 		{
 			"name": "hdiv",
@@ -8,8 +12,8 @@
 			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
 			"faces": {
 				"north": {"uv": [1, 7, 15, 9], "texture": "#front_divider", "cullface": "north"},
-				"up": {"uv": [15, 7, 1, 8], "texture": "#front_divider", "cullface": "north"},
-				"down": {"uv": [1, 9, 15, 8], "texture": "#front_divider", "cullface": "north"}
+				"up": {"uv": [1, 7, 15, 8], "texture": "#front_divider", "cullface": "north"},
+				"down": {"uv": [1, 8, 15, 9], "texture": "#front_divider", "cullface": "north"}
 			}
 		}
 	]
