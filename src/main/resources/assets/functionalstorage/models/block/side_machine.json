@@ -1,9 +1,9 @@
 {
 	"textures": {
-		"particle": "functionalstorage:block/compacting_drawer_side",
-		"side": "functionalstorage:block/compacting_drawer_side",
-		"bottom": "functionalstorage:block/compacting_drawer_bottom",
-		"top": "functionalstorage:block/compacting_drawer_top"
+		"particle": "functionalstorage:block/machine_side",
+		"bottom": "functionalstorage:block/machine_bottom",
+		"side": "functionalstorage:block/machine_side",
+		"top": "functionalstorage:block/machine_top"
 	},
 	"elements": [
 		{
