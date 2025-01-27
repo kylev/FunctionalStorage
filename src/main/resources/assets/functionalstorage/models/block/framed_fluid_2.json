@@ -1,21 +1,20 @@
 {
-	"credit": "Made with Blockbench",
 	"parent": "minecraft:block/block",
 	"loader": "functionalstorage:framedblock",
 	"textures": {
 		"particle": "functionalstorage:block/framed_side"
 	},
 	"children": {
-		"side": {
-			"parent": "functionalstorage:block/side",
-			"textures": {
-				"side": "functionalstorage:block/framed_side"
-			}
-		},
 		"front": {
 			"parent": "functionalstorage:block/fluid_front_2",
 			"textures": {
 				"front": "functionalstorage:block/fluid_front_2"
+			}
+		},
+		"side": {
+			"parent": "functionalstorage:block/side",
+			"textures": {
+				"side": "functionalstorage:block/framed_side"
 			}
 		},
 		"tank": {
