@@ -1,9 +1,9 @@
 {
 	"textures": {
-		"particle": "functionalstorage:block/placeholder",
-		"side": "functionalstorage:block/placeholder",
-		"bottom": "functionalstorage:block/placeholder",
-		"top": "functionalstorage:block/placeholder"
+		"particle": "functionalstorage:block/compacting_drawer_side",
+		"side": "functionalstorage:block/compacting_drawer_side",
+		"bottom": "functionalstorage:block/compacting_drawer_bottom",
+		"top": "functionalstorage:block/compacting_drawer_top"
 	},
 	"elements": [
 		{

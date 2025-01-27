@@ -12,12 +12,7 @@
 			}
 		},
 		"side": {
-			"parent": "functionalstorage:block/side_plus",
-			"textures": {
-				"bottom": "functionalstorage:block/compacting_drawer_bottom",
-				"side": "functionalstorage:block/compacting_drawer_side",
-				"top": "functionalstorage:block/compacting_drawer_top"
-			}
+			"parent": "functionalstorage:block/side_machine"
 		}
 	}
 }
