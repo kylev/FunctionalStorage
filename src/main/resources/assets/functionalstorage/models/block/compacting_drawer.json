@@ -2,7 +2,7 @@
 	"parent": "minecraft:block/block",
 	"loader": "neoforge:composite",
 	"textures": {
-		"particle": "functionalstorage:block/compacting_drawer_side"
+		"particle": "functionalstorage:block/compacting_drawer_front"
 	},
 	"children": {
 		"front": {
