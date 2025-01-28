@@ -1,26 +1,28 @@
 {
 	"credit": "Made with Blockbench",
+	"textures": {
+		"particle": "functionalstorage:block/compacting_front",
+		"front_divider": "functionalstorage:block/compacting_front"
+	},
 	"elements": [
 		{
 			"name": "hdiv",
 			"from": [1, 7, 0],
 			"to": [15, 9, 0.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
 			"faces": {
 				"north": {"uv": [1, 7, 15, 9], "texture": "#front_divider", "cullface": "north"},
-				"up": {"uv": [15, 6, 1, 7], "texture": "#front_divider", "cullface": "north"},
-				"down": {"uv": [1, 10, 15, 9], "texture": "#front_divider", "cullface": "north"}
+				"up": {"uv": [1, 7, 15, 7.5], "texture": "#front_divider", "cullface": "north"},
+				"down": {"uv": [1, 8, 15, 8.5], "texture": "#front_divider", "cullface": "north"}
 			}
 		},
 		{
 			"name": "vdivLower",
 			"from": [7, 1, 0],
 			"to": [9, 7, 0.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-3, -7, -8]},
 			"faces": {
-				"north": {"uv": [7, 10, 9, 15], "texture": "#front_divider", "cullface": "north"},
-				"east": {"uv": [6, 9, 7, 15], "texture": "#front_divider", "cullface": "north"},
-				"west": {"uv": [9, 9, 10, 15], "texture": "#front_divider", "cullface": "north"}
+				"north": {"uv": [7, 9, 9, 15], "texture": "#front_divider", "cullface": "north"},
+				"east": {"uv": [7, 9, 7.5, 15], "rotation": 180, "texture": "#front_divider", "cullface": "north"},
+				"west": {"uv": [8, 9, 8.5, 15], "rotation": 180, "texture": "#front_divider", "cullface": "north"}
 			}
 		}
 	]
