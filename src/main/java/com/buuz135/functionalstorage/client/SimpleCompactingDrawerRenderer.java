@@ -2,11 +2,7 @@ package com.buuz135.functionalstorage.client;
 
 import com.buuz135.functionalstorage.block.tile.SimpleCompactingDrawerTile;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
@@ -32,7 +28,5 @@ public class SimpleCompactingDrawerRenderer extends BaseDrawerRenderer<SimpleCom
             DrawerRenderer.renderStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, stack, tile.getHandler().getStackInSlot(1).getCount(), tile.getHandler().getSlotLimit(1),0.02f, tile.getDrawerOptions(), tile.getLevel());
             matrixStack.popPose();
         }
-        matrixStack.popPose();
     }
-
 }

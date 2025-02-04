@@ -4,15 +4,10 @@ import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix
 
 import com.buuz135.functionalstorage.block.tile.CompactingDrawerTile;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
-import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix;
 
 public class CompactingDrawerRenderer extends BaseDrawerRenderer<CompactingDrawerTile> {
 
@@ -42,7 +37,6 @@ public class CompactingDrawerRenderer extends BaseDrawerRenderer<CompactingDrawe
             DrawerRenderer.renderStack(matrixStack,  bufferIn, combinedLightIn, combinedOverlayIn, stack, tile.getHandler().getStackInSlot(2).getCount(), tile.getHandler().getSlotLimit(2), 0.02f, tile.getDrawerOptions(), tile.getLevel());
             matrixStack.popPose();
         }
-        matrixStack.popPose();
     }
 
 }

@@ -12,15 +12,12 @@ import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -32,39 +29,12 @@ import org.joml.Vector3f;
 import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix;
 
 public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
-	
+
     @Override
     public final void renderItems(DrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_1) render1Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_2) render2Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_4) render4Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
-        matrixStack.popPose();
-    }
-
-    public static void renderUpgrades(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, ControllableDrawerTile<?> tile){
-        float scale = 0.0625f;
-        if (tile.getDrawerOptions().isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_UPGRADES)){
-            matrixStack.pushPose();
-            matrixStack.translate(0.031,0.031f,0.472/16D);
-            for (int i = 0; i < tile.getStorageUpgrades().getSlots(); i++) {
-                ItemStack stack = tile.getStorageUpgrades().getStackInSlot(i);
-                if (!stack.isEmpty()){
-                    matrixStack.pushPose();
-                    matrixStack.scale(scale, scale, scale);
-                    Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, tile.getLevel(), 0);
-                    matrixStack.popPose();
-                    matrixStack.translate(scale,0,0);
-                }
-            }
-            matrixStack.popPose();
-        }
-        if (tile.isVoid()){
-            matrixStack.pushPose();
-            matrixStack.mulPose(createTransformMatrix(
-            		new Vector3f(0.969f,0.031f,0.469f/16.0f), new Vector3f(0), scale));
-            Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(FunctionalStorage.VOID_UPGRADE.get()), ItemDisplayContext.NONE, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, tile.getLevel(),0);
-            matrixStack.popPose();
-        }
     }
 
     public static void renderIndicator(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, float progress, ControllableDrawerTile.DrawerOptions options) {
@@ -114,9 +84,11 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
     private void render1Slot(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, DrawerTile tile){
         BigInventoryHandler inventoryHandler = (BigInventoryHandler) tile.getStorage();
         if (!inventoryHandler.getStoredStacks().get(0).getStack().isEmpty()){
+            matrixStack.pushPose();
             matrixStack.translate(0.5, 0.5, 0.0005f);
             ItemStack stack = inventoryHandler.getStoredStacks().get(0).getStack();
             renderStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, stack, inventoryHandler.getStackInSlot(0).getCount(), inventoryHandler.getSlotLimit(0),0.015f, tile.getDrawerOptions(), tile.getLevel());
+            matrixStack.popPose();
         }
     }
 

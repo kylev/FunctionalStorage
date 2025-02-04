@@ -8,13 +8,10 @@ import com.buuz135.functionalstorage.item.ConfigurationToolItem;
 import com.buuz135.functionalstorage.util.NumberUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -26,7 +23,12 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Matrix4f;
 
 
-public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile> {
+public class FluidDrawerRenderer extends BaseDrawerRenderer<FluidDrawerTile> {
+
+    private static final double TANK_HEIGHT_FULL = 12.5 / 16D;
+    private static final double TANK_HEIGHT_HALF = 5.5 / 16D;
+
+    private static final AABB TANK_AABB = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 14 / 16D, 15 / 16D);
 
     public static void renderFluidStack(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLight, int combinedOverlay, FluidStack stack, int amount, int maxAmount, float scale, ControllableDrawerTile.DrawerOptions options, AABB bounds, boolean halfText, boolean isSmallBar) {
         if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_RENDER)) {
@@ -60,7 +62,6 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
             Matrix4f posMat = matrixStack.last().pose();
 
             //TOP
-
             {
                 float u1 = still.getU(bx1);
                 float u2 = still.getU(bx2);
@@ -93,6 +94,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
             DrawerRenderer.renderText(matrixStack, bufferIn, combinedOverlay, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedFluidBigNumber(amount)), Direction.NORTH, scale);
             matrixStack.popPose();
         }
+
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.453, 0.97);
         if (halfText) {
@@ -101,7 +103,6 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
         }
         DrawerRenderer.renderIndicator(matrixStack, bufferIn, combinedLight, combinedOverlay, Math.min(1, amount / (float) maxAmount), options);
         matrixStack.popPose();
-
     }
 
     public static float[] decomposeColorF(int color) {
@@ -114,43 +115,13 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
     }
 
     @Override
-    public int getViewDistance() {
-        return FunctionalStorageClientConfig.DRAWER_RENDER_RANGE;
-    }
-
-    @Override
-    public void render(FluidDrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        matrixStack.pushPose();
-        Direction facing = tile.getFacingDirection();
-        matrixStack.mulPose(Axis.YP.rotationDegrees(-180));
-        if (facing == Direction.NORTH) {
-            //matrixStack.translate(0, 0, 1.016 / 16D);
-            matrixStack.translate(-1, 0, -1);
-        }
-        if (facing == Direction.EAST) {
-            matrixStack.translate(0, 0, -1);
-            matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
-        }
-        if (facing == Direction.SOUTH) {
-            matrixStack.mulPose(Axis.YP.rotationDegrees(-180));
-        }
-        if (facing == Direction.WEST) {
-            matrixStack.translate(-1, 0, 0);
-            matrixStack.mulPose(Axis.YP.rotationDegrees(90));
-        }
-        combinedLightIn = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
-
+    public void renderItems(FluidDrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_1)
             render1Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_2)
             render2Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_4)
             render4Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
-        matrixStack.pushPose();
-        matrixStack.translate(0, 0, 0.9688);
-        DrawerRenderer.renderUpgrades(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
-        matrixStack.popPose();
-        matrixStack.popPose();
     }
 
     private void render1Slot(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, FluidDrawerTile tile) {
@@ -162,7 +133,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[0];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(0)) * (12.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(0)) * TANK_HEIGHT_FULL, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(0), 0.007f, tile.getDrawerOptions(), bounds, false, false);
         }
 
@@ -177,7 +148,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[0];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(0)) * (5.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(0)) * TANK_HEIGHT_HALF, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(0), 0.007f, tile.getDrawerOptions(), bounds, false, true);
         }
         if (!inventoryHandler.getFluidInTank(1).isEmpty() || (tile.isLocked() && !inventoryHandler.getFilterStack()[1].isEmpty())) {
@@ -189,7 +160,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[1];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(1)) * (5.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 15 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(1)) * TANK_HEIGHT_HALF, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(1), 0.007f, tile.getDrawerOptions(), bounds, false, true);
             matrixStack.popPose();
         }
@@ -206,7 +177,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[0];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(0)) * (5.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(0)) * TANK_HEIGHT_HALF, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(0), 0.007f, tile.getDrawerOptions(), bounds, true, true);
             matrixStack.popPose();
         }
@@ -218,7 +189,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[1];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(1)) * (5.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(1)) * TANK_HEIGHT_HALF, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(1), 0.007f, tile.getDrawerOptions(), bounds, true, true);
             matrixStack.popPose();
         }
@@ -231,7 +202,7 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[2];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(2)) * (5.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(2)) * TANK_HEIGHT_HALF, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(2), 0.007f, tile.getDrawerOptions(), bounds, true, true);
             matrixStack.popPose();
         }
@@ -244,10 +215,9 @@ public class FluidDrawerRenderer implements BlockEntityRenderer<FluidDrawerTile>
                 fluidStack = inventoryHandler.getFilterStack()[3];
                 displayAmount = 0;
             }
-            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(3)) * (5.5 / 16D), 15 / 16D);
+            AABB bounds = new AABB(1 / 16D, 1.25 / 16D, 1 / 16D, 8 / 16D, 1.25 / 16D + (fluidStack.getAmount() / (double) inventoryHandler.getTankCapacity(3)) * TANK_HEIGHT_HALF, 15 / 16D);
             renderFluidStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, fluidStack, displayAmount, inventoryHandler.getTankCapacity(3), 0.007f, tile.getDrawerOptions(), bounds, true, true);
             matrixStack.popPose();
         }
     }
-
 }
