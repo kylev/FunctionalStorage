@@ -4,6 +4,7 @@ import com.buuz135.functionalstorage.FunctionalStorage;
 import com.buuz135.functionalstorage.block.tile.ControllableDrawerTile;
 import com.buuz135.functionalstorage.item.ConfigurationToolItem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.logging.LogUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -18,6 +19,8 @@ import org.joml.Vector3f;
 import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix;
 
 public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> implements BlockEntityRenderer<T> {
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
+
     @Override
     public int getViewDistance() {
         return FunctionalStorageClientConfig.DRAWER_RENDER_RANGE;
@@ -28,27 +31,10 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
         matrixStack.pushPose();
 
         Direction facing = tile.getFacingDirection();
-        matrixStack.mulPose(createTransformMatrix(
-                new Vector3f(0), new Vector3f(0, 180, 0), 1));
-
-        if (facing == Direction.NORTH) {
-            matrixStack.mulPose(createTransformMatrix(
-                    new Vector3f(-1, 0, 0), new Vector3f(0), 1));
-        }
-        else if (facing == Direction.EAST) {
-            matrixStack.mulPose(createTransformMatrix(
-                    new Vector3f(-1, 0, -1), new Vector3f(0, -90, 0), 1));
-        }
-        else if (facing == Direction.SOUTH) {
-            matrixStack.mulPose(createTransformMatrix(
-                    new Vector3f(0, 0, -1), new Vector3f(0, 180, 0), 1));
-        }
-        else if (facing == Direction.WEST) {
-            matrixStack.mulPose(createTransformMatrix(
-                    new Vector3f(0, 0, 0), new Vector3f(0, 90, 0), 1));
-        }
-
-        matrixStack.translate(0, 0, -0.5/16D);
+        // var rot = facing.getNormal();
+        // matrixStack.translate(rot.getX(), rot.getY(), rot.getZ());
+        matrixStack.rotateAround(facing.getRotation(), 0.5f, 0.0f, 0.5f);
+        // matrixStack.translate(0, 0, -0.5/16D);
         combinedLightIn = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
 
         renderUpgrades(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
@@ -59,9 +45,6 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
     public abstract void renderItems(T tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn);
 
     public static void renderUpgrades(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, ControllableDrawerTile<?> tile) {
-        if (true) {
-            return;
-        }
 
         float scale = 0.0625f;
         if (tile.getDrawerOptions().isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_UPGRADES)){

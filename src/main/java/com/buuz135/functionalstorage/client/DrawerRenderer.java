@@ -161,21 +161,21 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
         			new Vector3f(0), new Vector3f(0), .4f));
         }
 
-        matrixStack.mulPose(Axis.YP.rotationDegrees(180));
+        // matrixStack.mulPose(Axis.YP.rotationDegrees(180));
         if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_RENDER))
         {
         	Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, level,0);
         }
 
-    	matrixStack.mulPose(createTransformMatrix(
-    			new Vector3f(0), new Vector3f(0, 180, 0), 1));
-        if (!model.isGui3d()){
-        	matrixStack.mulPose(createTransformMatrix(
-        			new Vector3f(0), new Vector3f(0), new Vector3f(0.5f / 0.4f, 0.5f / 0.4f, 1)));
-        } else {
-        	matrixStack.mulPose(createTransformMatrix(
-        			new Vector3f(0), new Vector3f(0), .665f));
-        }
+    	// matrixStack.mulPose(createTransformMatrix(
+    	// 		new Vector3f(0), new Vector3f(0, 180, 0), 1));
+        // if (!model.isGui3d()){
+        // 	matrixStack.mulPose(createTransformMatrix(
+        // 			new Vector3f(0), new Vector3f(0), new Vector3f(0.5f / 0.4f, 0.5f / 0.4f, 1)));
+        // } else {
+        // 	matrixStack.mulPose(createTransformMatrix(
+        // 			new Vector3f(0), new Vector3f(0), .665f));
+        // }
 
 
         if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_NUMBERS))
