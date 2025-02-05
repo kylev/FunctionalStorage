@@ -12,7 +12,7 @@ import org.joml.Vector3f;
 public class CompactingDrawerRenderer extends BaseDrawerRenderer<CompactingDrawerTile> {
 
     @Override
-    public void renderItems(CompactingDrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderItems(CompactingDrawerTile tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         ItemStack stack = tile.getHandler().getResultList().get(0).getResult();
         if (!stack.isEmpty()){
             matrixStack.pushPose();

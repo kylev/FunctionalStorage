@@ -32,15 +32,15 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
         matrixStack.rotateAround(Axis.YP.rotationDegrees(-facing.toYRot()), 0.5f, 0.5f, 0.5f);
         combinedLightIn = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
 
-        renderItems(tile, partialTicks, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
-        renderUpgrades(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
+        renderItems(tile, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
+        renderUpgrades(tile, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
 
         matrixStack.popPose();
     }
 
-    public abstract void renderItems(T tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn);
+    public abstract void renderItems(T tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn);
 
-    public static void renderUpgrades(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, ControllableDrawerTile<?> tile) {
+    public static void renderUpgrades(ControllableDrawerTile<?> tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         final float scale = 1 / 16f;
         final float zOffset = 0.45f / 16f;
 

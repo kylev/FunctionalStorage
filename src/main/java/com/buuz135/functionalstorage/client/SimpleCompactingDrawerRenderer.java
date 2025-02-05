@@ -11,7 +11,7 @@ import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix
 public class SimpleCompactingDrawerRenderer extends BaseDrawerRenderer<SimpleCompactingDrawerTile> {
 
     @Override
-    public void renderItems(SimpleCompactingDrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderItems(SimpleCompactingDrawerTile tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         ItemStack stack = tile.getHandler().getResultList().get(0).getResult();
         if (!stack.isEmpty()) {
             matrixStack.pushPose();

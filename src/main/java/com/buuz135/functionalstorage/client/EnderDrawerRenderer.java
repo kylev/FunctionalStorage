@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 public class EnderDrawerRenderer extends BaseDrawerRenderer<EnderDrawerTile> {
 
     @Override
-    public void renderItems(EnderDrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderItems(EnderDrawerTile tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         EnderInventoryHandler inventoryHandler =  EnderSavedData.getInstance(tile.getLevel()).getFrequency(tile.getFrequency());
         if (!inventoryHandler.getStoredStacks().get(0).getStack().isEmpty()){
             matrixStack.pushPose();

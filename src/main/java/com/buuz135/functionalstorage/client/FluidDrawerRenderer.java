@@ -91,7 +91,7 @@ public class FluidDrawerRenderer extends BaseDrawerRenderer<FluidDrawerTile> {
             matrixStack.pushPose();
             matrixStack.translate(0.5, 0.84, 0.97);
             if (halfText) matrixStack.translate(-0.25, 0, 0);
-            DrawerRenderer.renderText(matrixStack, bufferIn, combinedOverlay, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedFluidBigNumber(amount)), Direction.NORTH, scale);
+            DrawerRenderer.renderText(matrixStack, bufferIn, combinedOverlay, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedFluidBigNumber(amount)), scale);
             matrixStack.popPose();
         }
 
@@ -115,7 +115,7 @@ public class FluidDrawerRenderer extends BaseDrawerRenderer<FluidDrawerTile> {
     }
 
     @Override
-    public void renderItems(FluidDrawerTile tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void renderItems(FluidDrawerTile tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_1)
             render1Slot(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
         if (tile.getDrawerType() == FunctionalStorage.DrawerType.X_2)
