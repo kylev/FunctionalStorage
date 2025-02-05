@@ -15,9 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import org.joml.Vector3f;
-
-import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix;
 
 public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> implements BlockEntityRenderer<T> {
     private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
@@ -35,35 +32,37 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
         matrixStack.rotateAround(Axis.YP.rotationDegrees(-facing.toYRot()), 0.5f, 0.5f, 0.5f);
         combinedLightIn = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
 
-        renderUpgrades(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
         renderItems(tile, partialTicks, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
+        renderUpgrades(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
+
         matrixStack.popPose();
     }
 
     public abstract void renderItems(T tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn);
 
     public static void renderUpgrades(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, ControllableDrawerTile<?> tile) {
+        final float scale = 1 / 16f;
+        final float zOffset = 0.45f / 16f;
 
-        float scale = 0.0625f;
-        if (tile.getDrawerOptions().isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_UPGRADES)){
+        if (tile.getDrawerOptions().isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_UPGRADES)) {
             matrixStack.pushPose();
-            matrixStack.translate(0.031, 0.031f, 0.472f / 16);
+            matrixStack.translate(14.5 / 16f, 0.5 / 16f, zOffset);
+            matrixStack.scale(scale, scale, 1);
+
             for (int i = 0; i < tile.getStorageUpgrades().getSlots(); i++) {
                 ItemStack stack = tile.getStorageUpgrades().getStackInSlot(i);
-                if (!stack.isEmpty()){
-                    matrixStack.pushPose();
-                    matrixStack.scale(scale, scale, scale);
+                if (!stack.isEmpty()) {
                     Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.NONE, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, tile.getLevel(), 0);
-                    matrixStack.popPose();
-                    matrixStack.translate(scale,0,0);
+                    matrixStack.translate(-1, 0, 0);
                 }
             }
             matrixStack.popPose();
         }
-        if (tile.isVoid()){
+
+        if (tile.isVoid()) {
             matrixStack.pushPose();
-            matrixStack.mulPose(createTransformMatrix(
-            		new Vector3f(0.969f, 0.031f, 0.469f / 16), new Vector3f(0), scale));
+            matrixStack.translate(1.5 / 16f, 0.5 / 16f, zOffset);
+            matrixStack.scale(scale, scale, 1);
             Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(FunctionalStorage.VOID_UPGRADE.get()), ItemDisplayContext.NONE, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, tile.getLevel(),0);
             matrixStack.popPose();
         }
