@@ -5,6 +5,7 @@ import com.buuz135.functionalstorage.block.tile.ControllableDrawerTile;
 import com.buuz135.functionalstorage.item.ConfigurationToolItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.logging.LogUtils;
+import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -30,11 +31,8 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
     public final void render(T tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStack.pushPose();
 
-        Direction facing = tile.getFacingDirection();
-        // var rot = facing.getNormal();
-        // matrixStack.translate(rot.getX(), rot.getY(), rot.getZ());
-        matrixStack.rotateAround(facing.getRotation(), 0.5f, 0.0f, 0.5f);
-        // matrixStack.translate(0, 0, -0.5/16D);
+        Direction facing = tile.getFacingDirection().getOpposite();
+        matrixStack.rotateAround(Axis.YP.rotationDegrees(-facing.toYRot()), 0.5f, 0.5f, 0.5f);
         combinedLightIn = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
 
         renderUpgrades(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, tile);
