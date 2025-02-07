@@ -48,7 +48,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public abstract class Drawer<T extends ControllableDrawerTile<T>> extends RotatableBlock<T> {

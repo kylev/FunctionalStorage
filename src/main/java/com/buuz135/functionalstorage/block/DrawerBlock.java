@@ -39,22 +39,23 @@ import java.util.function.Consumer;
 
 public class DrawerBlock extends Drawer<DrawerTile> {
 
-    public static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
+    public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
+    public static final HashMap<FunctionalStorage.DrawerType, HashMap<Direction, List<VoxelShape>>> CACHED_SHAPES = new HashMap<>();
 
+    private static final AABB OUTER_BLOCK = new AABB(0, 0, 0, 1, 1, 1);
     private static final List<AABB> FRONT_SHAPE_X1 = List.of(
-        new AABB(1 / 16D, 1 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
+        new AABB(1 / 16D, 1 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
+        OUTER_BLOCK);
     private static final List<AABB> FRONT_SHAPE_X2 = List.of(
         new AABB(1 / 16D, 1 / 16D, 0, 15 / 16D, 7 / 16D, 1 / 16D),
-        new AABB(1 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
+        new AABB(1 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
+        OUTER_BLOCK);
     private static final List<AABB> FRONT_SHAPE_X4 = List.of(
         new AABB(1 / 16D, 1 / 16D, 0, 7 / 16D, 7 / 16D, 1 / 16D),
         new AABB(9 / 16D, 1 / 16D, 0, 15 / 16D, 7 / 16D, 1 / 16D),
         new AABB(9 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
-        new AABB(1 / 16D, 9 / 16D, 0, 7 / 16D, 15 / 16D, 1 / 16D));
-
-    public static final HashMap<FunctionalStorage.DrawerType, HashMap<Direction, List<VoxelShape>>> CACHED_SHAPES = new HashMap<>();
-
-    public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
+        new AABB(1 / 16D, 9 / 16D, 0, 7 / 16D, 15 / 16D, 1 / 16D),
+        OUTER_BLOCK);
 
     static {
         for (var dir : Direction.Plane.HORIZONTAL) {
@@ -100,8 +101,6 @@ public class DrawerBlock extends Drawer<DrawerTile> {
                 .translate(center.negate());
         transformer.transformPosition(resMin);
         transformer.transformPosition(resMax);
-
-        LOGGER.info("minX from {} to {}", min.x, resMin.x);
 
         return new AABB(resMin.x, resMin.y, resMin.z, resMax.x, resMax.y, resMax.z);
     }
