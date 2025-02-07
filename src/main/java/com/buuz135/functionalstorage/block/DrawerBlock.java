@@ -6,8 +6,6 @@ import com.buuz135.functionalstorage.client.item.DrawerISTER;
 import com.buuz135.functionalstorage.inventory.item.DrawerStackItemHandler;
 import com.buuz135.functionalstorage.recipe.DrawerlessWoodIngredient;
 import com.buuz135.functionalstorage.util.IWoodType;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.hrznstudio.titanium.block.RotatableBlock;
 import com.hrznstudio.titanium.module.BlockWithTile;
 import com.hrznstudio.titanium.recipe.generator.TitaniumShapedRecipeBuilder;
@@ -32,17 +30,12 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3d;
 import org.joml.Matrix4d;
-import org.joml.Matrix4f;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
-import java.awt.Shape;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class DrawerBlock extends Drawer<DrawerTile> {
 
@@ -59,67 +52,18 @@ public class DrawerBlock extends Drawer<DrawerTile> {
         new AABB(9 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
         new AABB(1 / 16D, 9 / 16D, 0, 7 / 16D, 15 / 16D, 1 / 16D));
 
-    public static final HashMap<FunctionalStorage.DrawerType, Multimap<Direction, VoxelShape>> CACHED_SHAPES = new HashMap<>();
+    public static final HashMap<FunctionalStorage.DrawerType, HashMap<Direction, List<VoxelShape>>> CACHED_SHAPES = new HashMap<>();
 
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
 
     static {
-        CACHED_SHAPES
-                .computeIfAbsent(FunctionalStorage.DrawerType.X_1,
-                        type1 -> MultimapBuilder.hashKeys().arrayListValues().build())
-                .put(Direction.NORTH, Shapes.box(1 / 16D, 1 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
-        CACHED_SHAPES
-                .computeIfAbsent(FunctionalStorage.DrawerType.X_1,
-                        type1 -> MultimapBuilder.hashKeys().arrayListValues().build())
-                .put(Direction.SOUTH, Shapes.box(1 / 16D, 1 / 16D, 15 / 16D, 15 / 16D, 15 / 16D, 1));
-        CACHED_SHAPES
-                .computeIfAbsent(FunctionalStorage.DrawerType.X_1,
-                        type1 -> MultimapBuilder.hashKeys().arrayListValues().build())
-                .put(Direction.WEST, Shapes.box(0, 1 / 16D, 1 / 16D, 1 / 16D, 15 / 16D, 15 / 16D));
-        CACHED_SHAPES
-                .computeIfAbsent(FunctionalStorage.DrawerType.X_1,
-                        type1 -> MultimapBuilder.hashKeys().arrayListValues().build())
-                .put(Direction.EAST, Shapes.box(15 / 16D, 1 / 16D, 1 / 16D, 1, 15 / 16D, 15 / 16D));
-        for (Direction direction : CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_1).keySet()) {
-            for (VoxelShape voxelShape : CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_1).get(direction)) {
-                AABB bounding = voxelShape.toAabbs().get(0);
-                CACHED_SHAPES
-                        .computeIfAbsent(FunctionalStorage.DrawerType.X_2,
-                                type1 -> MultimapBuilder.hashKeys().arrayListValues().build())
-                        .put(direction, Shapes.box(bounding.minX, bounding.minY, bounding.minZ, bounding.maxX, 7 / 16D,
-                                bounding.maxZ));
-                CACHED_SHAPES
-                        .computeIfAbsent(FunctionalStorage.DrawerType.X_2,
-                                type1 -> MultimapBuilder.hashKeys().arrayListValues().build())
-                        .put(direction, Shapes.box(bounding.minX, 9 / 16D, bounding.minZ, bounding.maxX, bounding.maxY,
-                                bounding.maxZ));
-            }
-        }
-        for (Direction direction : CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_2).keySet()) {
-            for (VoxelShape voxelShape : CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_2).get(direction)) {
-                AABB bounding = voxelShape.toAabbs().get(0);
-                if (direction == Direction.SOUTH) {
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(9/16D, bounding.minY, bounding.minZ ,bounding.maxX, bounding.maxY, bounding.maxZ));
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(bounding.minX, bounding.minY, bounding.minZ , 7/16D, bounding.maxY, bounding.maxZ));
-                }else if (direction == Direction.NORTH){
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(bounding.minX, bounding.minY, bounding.minZ , 7/16D, bounding.maxY, bounding.maxZ));
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(9/16D, bounding.minY, bounding.minZ ,bounding.maxX, bounding.maxY, bounding.maxZ));
-                } else if (direction == Direction.EAST){
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(bounding.minX, bounding.minY, bounding.minZ , bounding.maxX, bounding.maxY, 7/16D));
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(bounding.minX, bounding.minY, 9/16D,bounding.maxX, bounding.maxY, bounding.maxZ));
-                } else {
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(bounding.minX, bounding.minY, 9/16D,bounding.maxX, bounding.maxY, bounding.maxZ));
-                    CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4, type1 -> MultimapBuilder.hashKeys().arrayListValues().build()).
-                            put(direction, Shapes.box(bounding.minX, bounding.minY, bounding.minZ , bounding.maxX, bounding.maxY, 7/16D));
-                }
-            }
+        for (var dir : Direction.Plane.HORIZONTAL) {
+            CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_1,
+                    t -> new HashMap<>()).put(dir, FRONT_SHAPE_X1.stream().map(a -> rotateShapes(a, dir)).map(Shapes::create).toList());
+            CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_2,
+                    t -> new HashMap<>()).put(dir, FRONT_SHAPE_X2.stream().map(a -> rotateShapes(a, dir)).map(Shapes::create).toList());
+            CACHED_SHAPES.computeIfAbsent(FunctionalStorage.DrawerType.X_4,
+                    t -> new HashMap<>()).put(dir, FRONT_SHAPE_X4.stream().map(a -> rotateShapes(a, dir)).map(Shapes::create).toList());
         }
     }
 
@@ -133,6 +77,7 @@ public class DrawerBlock extends Drawer<DrawerTile> {
         setItemGroup(FunctionalStorage.TAB);
         registerDefaultState(defaultBlockState().setValue(RotatableBlock.FACING_HORIZONTAL, Direction.NORTH).setValue(LOCKED, false));
     }
+
     @Override
     public BlockEntityType.BlockEntitySupplier<DrawerTile> getTileEntityFactory() {
         return (blockPos, state) -> new DrawerTile(this, (BlockEntityType<DrawerTile>) FunctionalStorage.DRAWER_TYPES.get(type).stream().filter(registryObjectRegistryObjectPair -> registryObjectRegistryObjectPair.getBlock() == this).map(BlockWithTile::type).findFirst().get().get(), blockPos, state, type, woodType);
@@ -140,30 +85,19 @@ public class DrawerBlock extends Drawer<DrawerTile> {
 
     @Override
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
-        var direction = state.getValue(RotatableBlock.FACING_HORIZONTAL).getOpposite();
-        switch (this.type) {
-            case X_1:
-                return FRONT_SHAPE_X1.stream().map(a -> doThingy(a, direction)).map(Shapes::create).toList();
-            case X_2:
-                return FRONT_SHAPE_X2.stream().map(a -> doThingy(a, direction)).map(Shapes::create).toList();
-            case X_4:
-                return FRONT_SHAPE_X4.stream().map(a -> doThingy(a, direction)).map(Shapes::create).toList();
-            default:
-                return List.of(Shapes.block());
-        }
+        return CACHED_SHAPES.get(type).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
     }
 
-    public AABB doThingy(AABB in, Direction direction) {
+    public static AABB rotateShapes(AABB in, Direction direction) {
         var center = new Vector3d(0.5f, 0.5f, 0.5f);
         var min = in.getMinPosition();
         var max = in.getMaxPosition();
         var resMin = new Vector3d(min.x, min.y, min.z);
         var resMax = new Vector3d(max.x, max.y, max.z);
 
-        // var transformer = new Matrix4d().rotate(direction.toYRot(), 0.5f, 0.5f, 0.5f);
         var transformer = new Matrix4d().translate(center)
-        .rotate((float) Math.toRadians(-direction.toYRot()), 0f, 1f, 0f)
-        .translate(center.negate());
+                .rotate((float) Math.toRadians(-direction.getOpposite().toYRot()), 0f, 1f, 0f)
+                .translate(center.negate());
         transformer.transformPosition(resMin);
         transformer.transformPosition(resMax);
 
