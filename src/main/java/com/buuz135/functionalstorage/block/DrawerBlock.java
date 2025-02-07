@@ -39,6 +39,17 @@ import java.util.function.Consumer;
 
 public class DrawerBlock extends Drawer<DrawerTile> {
 
+    private static final List<VoxelShape> FRONT_SHAPE_X1 = List.of(
+        Shapes.box(1 / 16D, 1 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
+    private static final List<VoxelShape> FRONT_SHAPE_X2 = List.of(
+        Shapes.box(1 / 16D, 1 / 16D, 0, 15 / 16D, 7 / 16D, 1 / 16D),
+        Shapes.box(1 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
+    private static final List<VoxelShape> FRONT_SHAPE_X4 = List.of(
+        Shapes.box(1 / 16D, 1 / 16D, 0, 7 / 16D, 7 / 16D, 1 / 16D),
+        Shapes.box(9 / 16D, 1 / 16D, 0, 15 / 16D, 7 / 16D, 1 / 16D),
+        Shapes.box(9 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
+        Shapes.box(1 / 16D, 9 / 16D, 0, 7 / 16D, 15 / 16D, 1 / 16D));
+
     public static final HashMap<FunctionalStorage.DrawerType, Multimap<Direction, VoxelShape>> CACHED_SHAPES = new HashMap<>();
 
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
