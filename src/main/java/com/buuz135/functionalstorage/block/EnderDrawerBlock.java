@@ -74,11 +74,6 @@ public class EnderDrawerBlock extends Drawer<EnderDrawerTile> {
     }
 
     @Override
-    public Collection<VoxelShape> getHitShapes(BlockState state) {
-        return DrawerBlock.CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_1).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
-    }
-
-    @Override
     protected void copyTo(EnderDrawerTile tile, ItemStack stack) {
         if (!tile.isEverythingEmpty()) {
             stack.set(FSAttachments.TILE, tile.saveWithoutMetadata(tile.getLevel().registryAccess()));

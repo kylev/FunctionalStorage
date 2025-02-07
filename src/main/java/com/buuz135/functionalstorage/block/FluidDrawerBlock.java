@@ -32,7 +32,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -58,6 +57,7 @@ public class FluidDrawerBlock extends Drawer<FluidDrawerTile>{
         boxes.add(total);
         return boxes;
     }
+
     @Override
     public BlockEntityType.BlockEntitySupplier<FluidDrawerTile> getTileEntityFactory() {
         return (blockPos, state) -> {
@@ -75,11 +75,6 @@ public class FluidDrawerBlock extends Drawer<FluidDrawerTile>{
     @Override
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
         return getShapes(state, source, pos, this.type);
-    }
-
-    @Override
-    public Collection<VoxelShape> getHitShapes(BlockState state) {
-        return DrawerBlock.CACHED_SHAPES.get(type).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
     }
 
     @Override

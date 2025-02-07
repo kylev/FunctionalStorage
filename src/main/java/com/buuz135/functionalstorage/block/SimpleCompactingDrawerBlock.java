@@ -48,11 +48,6 @@ public class SimpleCompactingDrawerBlock extends Drawer<SimpleCompactingDrawerTi
     }
 
     @Override
-    public Collection<VoxelShape> getHitShapes(BlockState state) {
-        return DrawerBlock.CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_2).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
-    }
-
-    @Override
     public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this)
                 .pattern("SSS").pattern("SDP").pattern("SIS")

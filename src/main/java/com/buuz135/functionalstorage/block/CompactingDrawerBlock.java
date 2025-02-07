@@ -76,11 +76,6 @@ public class CompactingDrawerBlock extends Drawer<CompactingDrawerTile> {
     }
 
     @Override
-    public Collection<VoxelShape> getHitShapes(BlockState state) {
-        return CACHED_SHAPES.get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
-    }
-
-    @Override
     public void registerRecipe(RecipeOutput consumer) {
         TitaniumShapedRecipeBuilder.shapedRecipe(this)
                 .pattern("SSS").pattern("PDP").pattern("SIS")

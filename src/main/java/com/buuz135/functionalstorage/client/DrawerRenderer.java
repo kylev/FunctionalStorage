@@ -124,7 +124,6 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
     /* Thanks Mekanism */
     public static void renderText(PoseStack matrix, MultiBufferSource renderer, int overlayLight, Component text, float maxScale) {
 
-        // matrix.translate(0, -0.745, 0.01);
 
         float displayWidth = 1;
         float displayHeight = 1;
@@ -143,6 +142,7 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
         }
 
         matrix.pushPose();
+        matrix.translate(0, -0.745, -0.001);
         matrix.scale(scale, -scale, scale);
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
