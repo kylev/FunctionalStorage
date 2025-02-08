@@ -404,8 +404,8 @@ public class FunctionalStorage extends ModuleController {
         X_4(4, 8, "2x2", integer -> {
             if (integer == 0) return Pair.of(28, 28);
             if (integer == 1) return Pair.of(4, 28);
-            if (integer == 2) return Pair.of(28, 4);
-            return Pair.of(4, 4);
+            if (integer == 2) return Pair.of(4, 4);
+            return Pair.of(28, 4);
         });
 
         private final int slots;
