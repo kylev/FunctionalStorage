@@ -59,11 +59,7 @@ public class EnderDrawerBlock extends Drawer<EnderDrawerTile> {
 
     @Override
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
-        List<VoxelShape> boxes = new ArrayList<>();
-        DrawerBlock.CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_1).get(state.getValue(RotatableBlock.FACING_HORIZONTAL)).forEach(boxes::add);
-        VoxelShape total = Shapes.block();
-        boxes.add(total);
-        return boxes;
+        return DrawerBlock.CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_1).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
     }
 
     @Override

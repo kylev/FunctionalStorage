@@ -27,14 +27,6 @@ public class SimpleCompactingDrawerBlock extends Drawer<SimpleCompactingDrawerTi
         registerDefaultState(defaultBlockState().setValue(RotatableBlock.FACING_HORIZONTAL, Direction.NORTH).setValue(DrawerBlock.LOCKED, false));
     }
 
-    private static List<VoxelShape> getShapes(BlockState state, BlockGetter source, BlockPos pos) {
-        List<VoxelShape> boxes = new ArrayList<>();
-        DrawerBlock.CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_2).get(state.getValue(RotatableBlock.FACING_HORIZONTAL)).forEach(boxes::add);
-        VoxelShape total = Shapes.block();
-        boxes.add(total);
-        return boxes;
-    }
-
     @Override
     public BlockEntityType.BlockEntitySupplier<SimpleCompactingDrawerTile> getTileEntityFactory() {
         return (blockPos, state) -> new SimpleCompactingDrawerTile(this, (BlockEntityType<SimpleCompactingDrawerTile>) FunctionalStorage.SIMPLE_COMPACTING_DRAWER.type().get(), blockPos, state);
@@ -42,7 +34,7 @@ public class SimpleCompactingDrawerBlock extends Drawer<SimpleCompactingDrawerTi
 
     @Override
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
-        return getShapes(state, source, pos);
+        return DrawerBlock.CACHED_SHAPES.get(FunctionalStorage.DrawerType.X_2).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
     }
 
     @Override

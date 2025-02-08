@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4d;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,20 +43,16 @@ public class DrawerBlock extends Drawer<DrawerTile> {
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     public static final HashMap<FunctionalStorage.DrawerType, HashMap<Direction, List<VoxelShape>>> CACHED_SHAPES = new HashMap<>();
 
-    private static final AABB OUTER_BLOCK = new AABB(0, 0, 0, 1, 1, 1);
     private static final List<AABB> FRONT_SHAPE_X1 = List.of(
-        new AABB(1 / 16D, 1 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
-        OUTER_BLOCK);
+        new AABB(1 / 16D, 1 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
     private static final List<AABB> FRONT_SHAPE_X2 = List.of(
         new AABB(1 / 16D, 1 / 16D, 0, 15 / 16D, 7 / 16D, 1 / 16D),
-        new AABB(1 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
-        OUTER_BLOCK);
+        new AABB(1 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D));
     private static final List<AABB> FRONT_SHAPE_X4 = List.of(
         new AABB(1 / 16D, 1 / 16D, 0, 7 / 16D, 7 / 16D, 1 / 16D),
         new AABB(9 / 16D, 1 / 16D, 0, 15 / 16D, 7 / 16D, 1 / 16D),
         new AABB(9 / 16D, 9 / 16D, 0, 15 / 16D, 15 / 16D, 1 / 16D),
-        new AABB(1 / 16D, 9 / 16D, 0, 7 / 16D, 15 / 16D, 1 / 16D),
-        OUTER_BLOCK);
+        new AABB(1 / 16D, 9 / 16D, 0, 7 / 16D, 15 / 16D, 1 / 16D));
 
     static {
         for (var dir : Direction.Plane.HORIZONTAL) {
@@ -86,7 +83,12 @@ public class DrawerBlock extends Drawer<DrawerTile> {
 
     @Override
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
-        return CACHED_SHAPES.get(type).get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
+        List<VoxelShape> boxes = new ArrayList<>();
+        CACHED_SHAPES.get(this.type).get(state.getValue(RotatableBlock.FACING_HORIZONTAL)).forEach(boxes::add);
+        // TODO: We lose the outer hitbox without this, but with it we lose access to X4 left side?!?
+        // boxes.add(Shapes.block());
+
+        return boxes;
     }
 
     public static AABB rotateShapes(AABB in, Direction direction) {
