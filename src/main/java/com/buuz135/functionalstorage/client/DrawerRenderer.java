@@ -8,6 +8,7 @@ import com.buuz135.functionalstorage.item.ConfigurationToolItem;
 import com.buuz135.functionalstorage.util.NumberUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.logging.LogUtils;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -32,6 +33,8 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
+
     private static final Map<FunctionalStorage.DrawerType, Vector4f[]> SLOT_TRANSFORMS = Map.of(
         FunctionalStorage.DrawerType.X_1, new Vector4f[]{new Vector4f(0.5f, 0.5f, 0.0005f, 0.015f)},
         FunctionalStorage.DrawerType.X_2, new Vector4f[]{new Vector4f(0.5f, 0.27f, 0.0005f, 0.02f), new Vector4f(0.5f, 0.77f, 0.0005f, 0.02f)},
@@ -102,18 +105,20 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
         renderIndicator(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, Math.min(1, amount / (float) maxAmount), options);
 
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, Minecraft.getInstance().level, null, 0);
-        if (model.isGui3d()){
-        	float thickness = (float)FunctionalStorageClientConfig.DRAWER_RENDER_THICKNESS;
-        	// Avoid scaling normal matrix by using mulPose() instead of scale()
-        	matrixStack.mulPose(createTransformMatrix(
-        			new Vector3f(0), new Vector3f(0), new Vector3f(.75f, .75f, thickness)));
-        } else {
-        	matrixStack.mulPose(createTransformMatrix(
-        			new Vector3f(0), new Vector3f(0), .4f));
-        }
-
         if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_RENDER)) {
+            matrixStack.pushPose();
+            if (model.isGui3d()) {
+                float thickness = (float)FunctionalStorageClientConfig.DRAWER_RENDER_THICKNESS;
+                // Avoid scaling normal matrix by using mulPose() instead of scale()
+                matrixStack.scale(.75f, .75f, thickness);
+            }
+            // } else {
+            //     matrixStack.mulPose(createTransformMatrix(
+            //             new Vector3f(0), new Vector3f(0), .4f));
+            // }
+
         	Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, level,0);
+            matrixStack.popPose();
         }
 
         if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_NUMBERS))
@@ -123,32 +128,16 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
 
     /* Thanks Mekanism */
     public static void renderText(PoseStack matrix, MultiBufferSource renderer, int overlayLight, Component text, float maxScale) {
-
-
-        float displayWidth = 1;
-        float displayHeight = 1;
-        //matrix.translate(displayWidth / 2, 0, displayHeight / 2);
-        //matrix.mulPose(Vector3f.XP.rotationDegrees(-90));
-
-        Font font = Minecraft.getInstance().font;
-
-        int requiredWidth = Math.max(font.width(text), 1);
-        int requiredHeight = font.lineHeight + 2;
-        float scaler = 0.4F;
-        float scaleX = displayWidth / requiredWidth;
-        float scale = scaleX * scaler;
-        if (maxScale > 0) {
-            scale = Math.min(scale, maxScale);
-        }
+        final var font = Minecraft.getInstance().font;
+        final int textWidth = Math.max(font.width(text), 1);
+        final float scale = 1 / 64F;
 
         matrix.pushPose();
-        matrix.translate(0, -0.745, -0.001);
-        matrix.scale(scale, -scale, scale);
-        int realHeight = (int) Math.floor(displayHeight / scale);
-        int realWidth = (int) Math.floor(displayWidth / scale);
-        int offsetX = (realWidth - requiredWidth) / 2;
-        int offsetY = (realHeight - requiredHeight) / 2;
-        font.drawInBatch(text, offsetX - realWidth / 2, 3 + offsetY - realHeight / 2, overlayLight, false, matrix.last().pose(), renderer, Font.DisplayMode.NORMAL,  0, 0xF000F0);
+        matrix.translate(0f, -4 / 16f, 0f);
+        matrix.scale(-scale, -scale, 1f);
+
+        font.drawInBatch(text.getVisualOrderText(), -textWidth / 2f, 0f, overlayLight,
+        false, matrix.last().pose(), renderer, Font.DisplayMode.NORMAL,  0, 0xF000F0);
         matrix.popPose();
     }
 }
