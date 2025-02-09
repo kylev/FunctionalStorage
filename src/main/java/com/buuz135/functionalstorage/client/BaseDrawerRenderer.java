@@ -17,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 
 
 public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> implements BlockEntityRenderer<T> {
-    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
 
     @Override
     public int getViewDistance() {
@@ -28,8 +27,8 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
     public final void render(T tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStack.pushPose();
 
-        Direction facing = tile.getFacingDirection().getOpposite();
-        matrixStack.rotateAround(Axis.YP.rotationDegrees(-facing.toYRot()), 0.5f, 0.5f, 0.5f);
+        Direction facing = tile.getFacingDirection();
+        matrixStack.rotateAround(Axis.YP.rotationDegrees(-facing.getOpposite().toYRot()), 0.5f, 0.5f, 0.5f);
         combinedLightIn = LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos().relative(facing));
 
         renderItems(tile, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
@@ -67,5 +66,4 @@ public abstract class BaseDrawerRenderer<T extends ControllableDrawerTile<T>> im
             matrixStack.popPose();
         }
     }
-
 }
