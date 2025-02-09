@@ -92,7 +92,7 @@ public class FluidDrawerRenderer extends BaseDrawerRenderer<FluidDrawerTile> {
             matrixStack.pushPose();
             matrixStack.translate(0.5, 0.84, 0.97);
             if (halfText) matrixStack.translate(-0.25, 0, 0);
-            DrawerRenderer.renderText(matrixStack, bufferIn, combinedOverlay, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedFluidBigNumber(amount)), scale);
+            DrawerRenderer.renderText(matrixStack, bufferIn, combinedOverlay, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedFluidBigNumber(amount)));
             matrixStack.popPose();
         }
 

@@ -9,7 +9,6 @@ import com.buuz135.functionalstorage.util.NumberUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.logging.LogUtils;
-import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -17,7 +16,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -25,9 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
-import static com.buuz135.functionalstorage.util.MathUtils.createTransformMatrix;
 
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -35,24 +31,46 @@ import java.util.stream.IntStream;
 public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
     private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
 
-    private static final Map<FunctionalStorage.DrawerType, Vector4f[]> SLOT_TRANSFORMS = Map.of(
-        FunctionalStorage.DrawerType.X_1, new Vector4f[]{new Vector4f(0.5f, 0.5f, 0.0005f, 0.015f)},
-        FunctionalStorage.DrawerType.X_2, new Vector4f[]{new Vector4f(0.5f, 0.27f, 0.0005f, 0.02f), new Vector4f(0.5f, 0.77f, 0.0005f, 0.02f)},
-        FunctionalStorage.DrawerType.X_4, new Vector4f[]{new Vector4f(0.25f, 0.27f, 0.0005f, 0.02f), new Vector4f(0.75f, 0.27f, 0.0005f, 0.02f), new Vector4f(0.75f, 0.77f, 0.0005f, 0.02f), new Vector4f(0.25f, 0.77f, 0.0005f, 0.02f)}
-    );
+    private static final float TALL_Y = 8 / 16f;
+    private static final float SHORT_Y_LOW = 4.5f / 16f;
+    private static final float SHORT_Y_HIGH = SHORT_Y_LOW + 0.5f;
+    private static final float TALL_TEXT_OFFSET = -6 / 16f;
+    private static final float SHORT_TEXT_OFFSET = -2.5f / 16f;
+    private static final float TALL_ITEMSCALE = 0.8f;
+    private static final float SHORT_ITEMSCALE = 0.45f;
+
+
+    private static final Map<FunctionalStorage.DrawerType, Vector3f[]> SLOT_CENTERS = Map.of(
+            FunctionalStorage.DrawerType.X_1, new Vector3f[] {
+                    new Vector3f(0.5f, TALL_Y, 0.0005f) },
+            FunctionalStorage.DrawerType.X_2, new Vector3f[] {
+                    new Vector3f(0.5f, SHORT_Y_LOW, 0.0005f),
+                    new Vector3f(0.5f, SHORT_Y_HIGH, 0.0005f) },
+            FunctionalStorage.DrawerType.X_4, new Vector3f[] {
+                    new Vector3f(0.25f, SHORT_Y_LOW, 0.0005f),
+                    new Vector3f(0.75f, SHORT_Y_LOW, 0.0005f),
+                    new Vector3f(0.75f, SHORT_Y_HIGH, 0.0005f),
+                    new Vector3f(0.25f, SHORT_Y_HIGH, 0.0005f) });
 
     @Override
     public final void renderItems(DrawerTile tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         var drawerType = tile.getDrawerType();
-        var coords = SLOT_TRANSFORMS.get(drawerType);
+        var coords = SLOT_CENTERS.get(drawerType);
+        final float scale = drawerType == FunctionalStorage.DrawerType.X_1 ? TALL_ITEMSCALE : SHORT_ITEMSCALE;
         BigInventoryHandler inventoryHandler = (BigInventoryHandler) tile.getStorage();
 
         IntStream.range(0, drawerType.getSlots()).forEach(i -> {
             matrixStack.pushPose();
-            matrixStack.translate(coords[i].x, coords[i].y, coords[i].z);
-            matrixStack.scale(0.5f, 0.5f, 1.0f);
+            matrixStack.translate(coords[i].x, coords[i].y, 0.49 / 16f);
             ItemStack stack = inventoryHandler.getStoredStacks().get(i).getStack();
-            renderStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, stack, inventoryHandler.getStackInSlot(i).getCount(), inventoryHandler.getSlotLimit(i), coords[i].w, tile.getDrawerOptions(), tile.getLevel());
+            var options = tile.getDrawerOptions();
+            renderStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, stack, stack.getCount(), inventoryHandler.getSlotLimit(i), scale, options, tile.getLevel());
+
+            if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_NUMBERS)) {
+                matrixStack.translate(0f, drawerType == FunctionalStorage.DrawerType.X_1 ? TALL_TEXT_OFFSET : SHORT_TEXT_OFFSET, 0);
+                renderText(matrixStack, bufferIn, combinedOverlayIn, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedBigNumber(stack.getCount())));
+            }
+
             matrixStack.popPose();
         });
     }
@@ -101,42 +119,36 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
         }
     }
 
-    public static void renderStack(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, ItemStack stack, int amount, int maxAmount, float scale, ControllableDrawerTile.DrawerOptions options, Level level) {
+    public static void renderStack(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, ItemStack stack, int amount, int maxAmount, float itemScale, ControllableDrawerTile.DrawerOptions options, Level level) {
         renderIndicator(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, Math.min(1, amount / (float) maxAmount), options);
 
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, Minecraft.getInstance().level, null, 0);
         if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_RENDER)) {
             matrixStack.pushPose();
+
             if (model.isGui3d()) {
-                float thickness = (float)FunctionalStorageClientConfig.DRAWER_RENDER_THICKNESS;
-                // Avoid scaling normal matrix by using mulPose() instead of scale()
-                matrixStack.scale(.75f, .75f, thickness);
+                matrixStack.scale(itemScale, itemScale, itemScale / 4f);
+            } else {
+                // Add fake item depth
+                matrixStack.scale(itemScale * 0.5f, itemScale * 0.5f, 0.5f);
             }
-            // } else {
-            //     matrixStack.mulPose(createTransformMatrix(
-            //             new Vector3f(0), new Vector3f(0), .4f));
-            // }
 
         	Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, level,0);
             matrixStack.popPose();
         }
-
-        if (options.isActive(ConfigurationToolItem.ConfigurationAction.TOGGLE_NUMBERS))
-            renderText(matrixStack, bufferIn, combinedOverlayIn, Component.literal(ChatFormatting.WHITE + "" + NumberUtils.getFormatedBigNumber(amount)), scale);
     }
 
 
     /* Thanks Mekanism */
-    public static void renderText(PoseStack matrix, MultiBufferSource renderer, int overlayLight, Component text, float maxScale) {
+    public static void renderText(PoseStack matrix, MultiBufferSource renderer, int overlayLight, Component text) {
         final var font = Minecraft.getInstance().font;
         final int textWidth = Math.max(font.width(text), 1);
-        final float scale = 1 / 64F;
+        final float scale = 1 / 128F;
 
         matrix.pushPose();
-        matrix.translate(0f, -4 / 16f, 0f);
         matrix.scale(-scale, -scale, 1f);
 
-        font.drawInBatch(text.getVisualOrderText(), -textWidth / 2f, 0f, overlayLight,
+        font.drawInBatch(text.getVisualOrderText(), -textWidth / 2f, 0, overlayLight,
         false, matrix.last().pose(), renderer, Font.DisplayMode.NORMAL,  0, 0xF000F0);
         matrix.popPose();
     }
