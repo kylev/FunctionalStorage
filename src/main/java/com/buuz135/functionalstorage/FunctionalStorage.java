@@ -401,11 +401,16 @@ public class FunctionalStorage extends ModuleController {
             if (integer == 0) return Pair.of(16, 28);
             return Pair.of(16, 4);
         }),
+        COMPACTING(3, 8, "Compacting", integer -> {
+            if (integer == 0) return Pair.of(16, 28);
+            if (integer == 1) return Pair.of(16, 4);
+            return Pair.of(16, 16);
+        }),
         X_4(4, 8, "2x2", integer -> {
             if (integer == 0) return Pair.of(28, 28);
             if (integer == 1) return Pair.of(4, 28);
-            if (integer == 2) return Pair.of(28, 4);
-            return Pair.of(4, 4);
+            if (integer == 2) return Pair.of(4, 4);
+            return Pair.of(28, 4);
         });
 
         private final int slots;

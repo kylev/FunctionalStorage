@@ -48,7 +48,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public abstract class Drawer<T extends ControllableDrawerTile<T>> extends RotatableBlock<T> {
@@ -281,15 +280,13 @@ public abstract class Drawer<T extends ControllableDrawerTile<T>> extends Rotata
         super.onRemove(state, worldIn, pos, newState, isMoving);
     }
 
-    public abstract Collection<VoxelShape> getHitShapes(BlockState state);
-
     public int getHit(BlockState state, Level worldIn, Player player) {
         HitResult result = RayTraceUtils.rayTraceSimple(worldIn, player, 32, 0);
         if (result instanceof BlockHitResult) {
             VoxelShape hit = RayTraceUtils.rayTraceVoxelShape((BlockHitResult) result, worldIn, player, 32, 0);
             if (hit != null) {
                 if (hit.equals(Shapes.block())) return -1;
-                List<VoxelShape> shapes = new ArrayList<>(getHitShapes(state));
+                List<VoxelShape> shapes = new ArrayList<>(getBoundingBoxes(state, worldIn, ((BlockHitResult) result).getBlockPos()));
                 for (int i = 0; i < shapes.size(); i++) {
                     if (Shapes.joinIsNotEmpty(shapes.get(i), hit, BooleanOp.AND)) {
                         return i;

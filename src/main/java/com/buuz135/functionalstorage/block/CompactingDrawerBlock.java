@@ -27,7 +27,6 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -50,7 +49,6 @@ public class CompactingDrawerBlock extends Drawer<CompactingDrawerTile> {
         CACHED_SHAPES.put(Direction.WEST, Shapes.box(0, 9/16D, 1/16D, 1/16D, 15/16D, 15/16D));
     }
 
-
     public CompactingDrawerBlock(String name, Properties properties) {
         super(name, properties, CompactingDrawerTile.class);
         setItemGroup(FunctionalStorage.TAB);
@@ -64,20 +62,11 @@ public class CompactingDrawerBlock extends Drawer<CompactingDrawerTile> {
 
     @Override
     public List<VoxelShape> getBoundingBoxes(BlockState state, BlockGetter source, BlockPos pos) {
-        return getShapes(state, source, pos);
-    }
-
-    private static List<VoxelShape> getShapes(BlockState state, BlockGetter source, BlockPos pos){
         List<VoxelShape> boxes = new ArrayList<>();
         CACHED_SHAPES.get(state.getValue(RotatableBlock.FACING_HORIZONTAL)).forEach(boxes::add);
         VoxelShape total = Shapes.block();
         boxes.add(total);
         return boxes;
-    }
-
-    @Override
-    public Collection<VoxelShape> getHitShapes(BlockState state) {
-        return CACHED_SHAPES.get(state.getValue(RotatableBlock.FACING_HORIZONTAL));
     }
 
     @Override
