@@ -56,13 +56,14 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
     public final void renderItems(DrawerTile tile, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         var drawerType = tile.getDrawerType();
         var coords = SLOT_CENTERS.get(drawerType);
-        final float scale = drawerType == FunctionalStorage.DrawerType.X_1 ? TALL_ITEMSCALE : SHORT_ITEMSCALE;
+        float scale = drawerType == FunctionalStorage.DrawerType.X_1 ? TALL_ITEMSCALE : SHORT_ITEMSCALE;
         BigInventoryHandler inventoryHandler = (BigInventoryHandler) tile.getStorage();
 
         IntStream.range(0, drawerType.getSlots()).forEach(i -> {
             matrixStack.pushPose();
             matrixStack.translate(coords[i].x, coords[i].y, 0.49 / 16f);
             ItemStack stack = inventoryHandler.getStoredStacks().get(i).getStack();
+            // int itemCount = stack.getCount();
             var options = tile.getDrawerOptions();
             renderStack(matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, stack, stack.getCount(), inventoryHandler.getSlotLimit(i), scale, options, tile.getLevel());
 
@@ -133,23 +134,22 @@ public class DrawerRenderer extends BaseDrawerRenderer<DrawerTile> {
                 matrixStack.scale(itemScale * 0.5f, itemScale * 0.5f, 0.5f);
             }
 
-        	Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, level,0);
+        	Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, level, 0);
             matrixStack.popPose();
         }
     }
 
-
     /* Thanks Mekanism */
     public static void renderText(PoseStack matrix, MultiBufferSource renderer, int overlayLight, Component text) {
-        final var font = Minecraft.getInstance().font;
-        final int textWidth = Math.max(font.width(text), 1);
-        final float scale = 1 / 128F;
+        var font = Minecraft.getInstance().font;
+        int textWidth = Math.max(font.width(text), 1);
+        float scale = -1 / 128F;
 
         matrix.pushPose();
-        matrix.scale(-scale, -scale, 1f);
+        matrix.scale(scale, scale, 1f);
 
         font.drawInBatch(text.getVisualOrderText(), -textWidth / 2f, 0, overlayLight,
-        false, matrix.last().pose(), renderer, Font.DisplayMode.NORMAL,  0, 0xF000F0);
+                false, matrix.last().pose(), renderer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
         matrix.popPose();
     }
 }
